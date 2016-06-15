@@ -10,16 +10,21 @@ ifndef LIBJVM
 	LIBJVM=$(JAVA_HOME)/jre/lib/amd64/server
 endif
 
-ifndef NO_OPENMP
-	DMLC_CFLAGS += -fopenmp
-	DMLC_LDFLAGS += -fopenmp
-endif
-
 # Mac OS X does not support "-lrt" flag
 ifeq ($(OS), Windows_NT)
 	UNAME=Windows
 else 
 	UNAME=$(shell uname)
+endif
+
+ifndef NO_OPENMP
+	ifeq ($(UNAME), Darwin)
+		DMLC_CFLAGS += -openmp
+		DMLC_LDFLAGS += -openmp
+	else
+		DMLC_CFLAGS += -fopenmp
+		DMLC_LDFLAGS += -fopenmp
+	endif
 endif
 
 ifeq ($(UNAME), Linux)
